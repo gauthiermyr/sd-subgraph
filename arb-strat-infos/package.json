@@ -1,0 +1,16 @@
+{
+  "name": "arb-strat-infos",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ arb-strat-infos",
+    "create-local": "graph create --node http://localhost:8020/ arb-strat-infos",
+    "remove-local": "graph remove --node http://localhost:8020/ arb-strat-infos",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 arb-strat-infos"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.25.1",
+    "@graphprotocol/graph-ts": "0.24.1"
+  }
+}
