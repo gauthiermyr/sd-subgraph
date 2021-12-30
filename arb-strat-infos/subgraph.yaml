@@ -42,3 +42,25 @@ dataSources:
         - event: RewardAdded(uint256,uint256)
           handler: handleRewardAddedV2
       file: ./src/mapping.ts
+  - kind: ethereum
+    name: StakeDaoNFT_V2
+    network: mainnet
+    source:
+      address: "0xc5f572b705cae1893cdceb5161ce40e2fc5bb6cd"
+      abi: StakeDaoNFT_V2
+      startBlock: 13318154
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - NFT
+      abis:
+        - name: StakeDaoNFT_V2
+          file: ./abis/StakeDaoNFT_V2.json
+      eventHandlers:
+        - event: StartedUsingNFT(indexed address,indexed uint256,indexed address)
+          handler: handleStartedUsingNFT
+        - event: EndedUsingNFT(indexed address,indexed uint256,indexed address)
+          handler: handleEndedUsingNFT
+      file: ./src/mapping.ts

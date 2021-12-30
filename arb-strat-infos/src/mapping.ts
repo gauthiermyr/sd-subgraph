@@ -1,46 +1,10 @@
-import {
-  RewardAdded as RewardAddedEvent,
-} from "../generated/DarkParadise/DarkParadise"
-import {
-  RewardAdded as RewardAddedEventV2,
-} from "../generated/DarkParadiseV2/DarkParadiseV2"
-import {
-  RewardAdded,
-} from "../generated/schema"
+import { RewardAdded as RewardAddedEvent } from "../generated/DarkParadise/DarkParadise"
+import { RewardAdded as RewardAddedEventV2 } from "../generated/DarkParadiseV2/DarkParadiseV2"
+import { StartedUsingNFT, StartedUsingNFT as StartedUsingNFTEvent } from "../generated/StakeDaoNFT_V2/StakeDaoNFT_V2"
+import { EndedUsingNFT as EndedUsingNFTEvent } from "../generated/StakeDaoNFT_V2/StakeDaoNFT_V2"
+import { RewardAdded, NFT } from "../generated/schema"
+import { Address, store } from '@graphprotocol/graph-ts'
 
-// export function handleDurationChange(event: DurationChangeEvent): void {
-//   let entity = new DurationChange(
-//     event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-//   )
-//   entity.newDuration = event.params.newDuration
-//   entity.oldDuration = event.params.oldDuration
-//   entity.save()
-// }
-
-// export function handleNFTSet(event: NFTSetEvent): void {
-//   let entity = new NFTSet(
-//     event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-//   )
-//   entity.newNFT = event.params.newNFT
-//   entity.save()
-// }
-
-// export function handleOwnerChanged(event: OwnerChangedEvent): void {
-//   let entity = new OwnerChanged(
-//     event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-//   )
-//   entity.oldOwner = event.params.oldOwner
-//   entity.newOwner = event.params.newOwner
-//   entity.save()
-// }
-
-// export function handleOwnerNominated(event: OwnerNominatedEvent): void {
-//   let entity = new OwnerNominated(
-//     event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-//   )
-//   entity.newOwner = event.params.newOwner
-//   entity.save()
-// }
 
 export function handleRewardAdded(event: RewardAddedEvent): void {
   let entity = new RewardAdded(event.transaction.hash.toHex());
@@ -56,29 +20,31 @@ export function handleRewardAddedV2(event: RewardAddedEventV2): void {
   entity.save();
 }
 
-// export function handleRewardPaid(event: RewardPaidEvent): void {
-//   let entity = new RewardPaid(
-//     event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-//   )
-//   entity.user = event.params.user
-//   entity.reward = event.params.reward
-//   entity.save()
-// }
+const DarkParadiseV2Address = '0x20d1b558ef44a6e23d9bf4bf8db1653626e642c3';
 
-// export function handleStaked(event: StakedEvent): void {
-//   let entity = new Staked(
-//     event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-//   )
-//   entity.user = event.params.user
-//   entity.amount = event.params.amount
-//   entity.save()
-// }
+export function handleStartedUsingNFT(event: StartedUsingNFT): void {
+  if(event.params.strategy.toHexString().toLowerCase() != DarkParadiseV2Address){
+    return;
+  }
 
-// export function handleWithdrawn(event: WithdrawnEvent): void {
-//   let entity = new Withdrawn(
-//     event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-//   )
-//   entity.user = event.params.user
-//   entity.amount = event.params.amount
-//   entity.save()
-// }
+  let nft = NFT.load(event.params.id.toString());
+  if(!nft){
+    let entity = new NFT(event.params.id.toString());
+    entity.strategy = event.params.strategy;
+    entity.owner = event.params.account;
+    entity.save();
+  }
+}
+
+export function handleEndedUsingNFT(event: EndedUsingNFTEvent): void {
+  if(event.params.strategy.toHexString().toLowerCase() != DarkParadiseV2Address){
+    return;
+  }
+
+  let nft = NFT.load(event.params.id.toString());
+  if(!nft){
+    return;
+  }
+
+  store.remove('NFT', nft.id);
+}

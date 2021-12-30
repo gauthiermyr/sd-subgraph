@@ -1,45 +1,11 @@
-# type DurationChange @entity {
-#   id: ID!
-#   newDuration: BigInt! # uint256
-#   oldDuration: BigInt! # uint256
-# }
-
-# type NFTSet @entity {
-#   id: ID!
-#   newNFT: Bytes! # address
-# }
-
-# type OwnerChanged @entity {
-#   id: ID!
-#   oldOwner: Bytes! # address
-#   newOwner: Bytes! # address
-# }
-
-# type OwnerNominated @entity {
-#   id: ID!
-#   newOwner: Bytes! # address
-# }
-
 type RewardAdded @entity {
   id: ID!
-  amount: BigInt! # uint256
+  amount: BigInt!
   timestamp: BigInt!
 }
 
-# type RewardPaid @entity {
-#   id: ID!
-#   user: Bytes! # address
-#   reward: BigInt! # uint256
-# }
-
-# type Staked @entity {
-#   id: ID!
-#   user: Bytes! # address
-#   amount: BigInt! # uint256
-# }
-
-# type Withdrawn @entity {
-#   id: ID!
-#   user: Bytes! # address
-#   amount: BigInt! # uint256
-# }
+type NFT @entity {
+  id: ID!
+  strategy: Bytes!
+  owner: Bytes!
+}

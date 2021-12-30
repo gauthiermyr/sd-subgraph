@@ -1,1 +1,2 @@
-sd-subgraph
+`graph codegen`
+`graph codegen && graph build`
