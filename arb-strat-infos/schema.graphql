@@ -2,6 +2,8 @@ type RewardAdded @entity {
   id: ID!
   amount: BigInt!
   timestamp: BigInt!
+  relatedPricePerShare: BigInt!
+  amountUSD: BigInt!
 }
 
 type NFT @entity {
