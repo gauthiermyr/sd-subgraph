@@ -24,10 +24,12 @@ export function handleRewardAdded(event: RewardAddedEvent): void {
 export function handleRewardAddedV2(event: RewardAddedEventV2): void {
 	const vault = Vault.bind(Address.fromString(sdFRAX3CRV_fAddress));
 	const pricePerShare = vault.getPricePerFullShare();
+	const amount = event.params.rewardTransferAmount;
 	let entity = new RewardAdded(event.transaction.hash.toHex());
-	entity.amount = event.params.rewardTransferAmount;
+	entity.amount = amount;
 	entity.timestamp = event.block.timestamp;
 	entity.relatedPricePerShare = pricePerShare;
+	entity.amountUSD = amount.times(pricePerShare).div(BigInt.fromString('10').pow(18));
 	entity.save();
 }
 
