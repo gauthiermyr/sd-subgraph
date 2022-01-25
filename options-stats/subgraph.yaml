@@ -1,0 +1,26 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: EthPutAirSwap
+    network: mainnet
+    source:
+      address: "0xfb87c273f9ba099a22139e9defe0f3183e9a3c9f"
+      abi: EthPutAirSwap
+      startBlock: 13473236	
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Events
+      abis:
+        - name: EthPutAirSwap
+          file: ./abis/EthPutAirSwap.json
+        - name: ChainLink_USDC
+          file: ./abis/ChainLink_USDC.json
+      callHandlers: 
+        - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
+          handler: handleMintAndSellOTokenCall
+      file: ./src/mapping.ts

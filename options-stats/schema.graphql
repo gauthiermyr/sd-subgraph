@@ -1,0 +1,11 @@
+type Event @entity {
+  id: ID!
+  type: String!
+  option: Int!
+  timestamp: BigInt!
+  premiumUnderlyingToken: BigInt!
+  oTokenAmount: BigInt!
+  collateralAmount: BigInt!
+  # settlement: BigInt!
+  underlyingAssetPrice: BigInt
+}
