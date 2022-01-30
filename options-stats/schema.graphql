@@ -1,11 +1,26 @@
-type Event @entity {
+type MintEvent @entity {
   id: ID!
-  type: String!
   option: Int!
   timestamp: BigInt!
-  premiumUnderlyingToken: BigInt!
-  oTokenAmount: BigInt!
-  collateralAmount: BigInt!
-  # settlement: BigInt!
+  premiumSdToken: BigInt
+  premiumUnderlyingToken: BigInt
+  oTokenAmount: BigInt
+  collateralAmount: BigInt
   underlyingAssetPrice: BigInt
+  sdTokenPricePerShare: BigInt
 }
+
+type CloseEvent @entity {
+  id: ID!
+  option: Int!
+  timestamp: BigInt!
+  sdTokenSentAmount: BigInt!
+  sdTokenPricePerShare: BigInt
+}
+
+# type HarvestEvent @entity {
+#   id: ID!
+#   option: Int!
+#   timestamp: BigInt!
+#   sdTokenPricePerShare: BigInt
+# }

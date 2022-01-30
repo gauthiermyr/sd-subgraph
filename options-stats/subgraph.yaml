@@ -14,13 +14,41 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Events
+        - MintEvent
       abis:
         - name: EthPutAirSwap
           file: ./abis/EthPutAirSwap.json
         - name: ChainLink_USDC
           file: ./abis/ChainLink_USDC.json
+        - name: sdFRAX3CRV_f_Vault
+          file: ./abis/sdFRAX3CRV_f_Vault.json
       callHandlers: 
         - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
           handler: handleMintAndSellOTokenCall
+      eventHandlers:
+        - event: MintAndSellOToken(uint256,uint256,uint256)
+          handler: handleMintAndSellOTokenEvent
       file: ./src/mapping.ts
+  - kind: ethereum
+    name: Payout
+    network: mainnet
+    source:
+      address: "0x4ccc2339F87F6c59c6893E1A678c2266cA58dC72"
+      abi: Payout
+      startBlock: 13469036	
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - CloseEvent
+      abis:
+        - name: Payout
+          file: ./abis/Payout.json
+        - name: sdFRAX3CRV_f_Vault
+          file: ./abis/sdFRAX3CRV_f_Vault.json
+      eventHandlers:
+        - event: VaultSettled(indexed address,indexed address,address,uint256,uint256,indexed uint256)
+          handler: handleVaultSettled
+      file: ./src/mapping.ts
+  
