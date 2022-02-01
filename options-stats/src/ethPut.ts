@@ -1,7 +1,7 @@
-import { MintAndSellOTokenCall } from "../generated/EthPutAirSwap/EthPutAirSwap"
-import { MintAndSellOToken as MintAndSellOTokenEvent } from "../generated/EthPutAirSwap/EthPutAirSwap"
-import { ChainLink_USDC as Oracle } from "../generated/EthPutAirSwap/ChainLink_USDC"
-import { sdFRAX3CRV_f_Vault } from "../generated/EthPutAirSwap/sdFRAX3CRV_f_Vault";
+import { MintAndSellOTokenCall } from "../generated/AirSwapEthPut/AirSwap"
+import { MintAndSellOToken as MintAndSellOTokenEvent } from "../generated/AirSwapEthPut/AirSwap"
+import { ChainLink as Oracle } from "../generated/AirSwapEthPut/ChainLink"
+import { sdFRAX3CRV_f_Vault } from "../generated/AirSwapEthPut/sdFRAX3CRV_f_Vault";
 import { MintEvent, CloseEvent } from "../generated/schema"
 import { Address, BigInt, ethereum, store } from '@graphprotocol/graph-ts'
 import { VaultSettled as VaultSettledEvent } from '../generated/Payout/Payout';
@@ -28,7 +28,7 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 		entity.oTokenAmount = call.inputs._otokenAmount;
 		entity.collateralAmount = call.inputs._collateralAmount;
 		entity.underlyingAssetPrice = USDCPrice;
-		entity.sdTokenPricePerShare = vault.getPricePerFullShare();
+		// entity.sdTokenPricePerShare = vault.getPricePerFullShare();
 
 		entity.save();
 	}
@@ -54,7 +54,7 @@ export function handleVaultSettled(event: VaultSettledEvent): void {
 	entity.timestamp = event.block.timestamp;
 	entity.option = Options.fraxRetail;
 	entity.sdTokenSentAmount = event.params.payout;
-	entity.sdTokenPricePerShare = vault.getPricePerFullShare();
+	// entity.sdTokenPricePerShare = vault.getPricePerFullShare();
 
 	entity.save();
 }

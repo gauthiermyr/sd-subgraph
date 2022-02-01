@@ -7,7 +7,7 @@ type MintEvent @entity {
   oTokenAmount: BigInt
   collateralAmount: BigInt
   underlyingAssetPrice: BigInt
-  sdTokenPricePerShare: BigInt
+  # sdTokenPricePerShare: BigInt
 }
 
 type CloseEvent @entity {
@@ -15,7 +15,7 @@ type CloseEvent @entity {
   option: Int!
   timestamp: BigInt!
   sdTokenSentAmount: BigInt!
-  sdTokenPricePerShare: BigInt
+  # sdTokenPricePerShare: BigInt
 }
 
 # type HarvestEvent @entity {
