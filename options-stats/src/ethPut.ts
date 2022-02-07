@@ -1,7 +1,7 @@
 import { MintAndSellOTokenCall } from "../generated/AirSwapEthPut/AirSwap"
 import { MintAndSellOToken as MintAndSellOTokenEvent } from "../generated/AirSwapEthPut/AirSwap"
 import { ChainLink as Oracle } from "../generated/AirSwapEthPut/ChainLink"
-import { sdFRAX3CRV_f_Vault } from "../generated/AirSwapEthPut/sdFRAX3CRV_f_Vault";
+import { Vault } from "../generated/AirSwapEthPut/Vault";
 import { MintEvent, CloseEvent } from "../generated/schema"
 import { Address, BigInt, ethereum, store } from '@graphprotocol/graph-ts'
 import { VaultSettled as VaultSettledEvent } from '../generated/Payout/Payout';
@@ -19,7 +19,7 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 	const oracle = Oracle.bind(Address.fromString(ChainLinkAddress));
 	const USDCPrice = oracle.latestAnswer().times(BigInt.fromString('10').pow(10));
 
-	const vault = sdFRAX3CRV_f_Vault.bind(Address.fromString(sdFRAX3CRV_f_VaultAddress));
+	const vault = Vault.bind(Address.fromString(sdFRAX3CRV_f_VaultAddress));
 
 	let entity = MintEvent.load(call.transaction.hash.toHexString());
 
@@ -49,7 +49,7 @@ export function handleVaultSettled(event: VaultSettledEvent): void {
 		return;
 	}
 
-	const vault = sdFRAX3CRV_f_Vault.bind(Address.fromString(sdFRAX3CRV_f_VaultAddress));
+	const vault = Vault.bind(Address.fromString(sdFRAX3CRV_f_VaultAddress));
 	let entity = new CloseEvent(event.transaction.hash.toHexString());
 	entity.timestamp = event.block.timestamp;
 	entity.option = Options.fraxRetail;

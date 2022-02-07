@@ -4,9 +4,12 @@ import { ChainLink as Oracle } from "../generated/AirSwapBtcCC/ChainLink"
 import { MintEvent, CloseEvent } from "../generated/schema"
 import { Address, BigInt, ethereum, store } from '@graphprotocol/graph-ts'
 import { VaultSettled as VaultSettledEvent } from '../generated/Payout/Payout';
+import { Vault } from '../generated/AirSwapBtcCC/Vault'
+import { CurvePool } from '../generated/AirSwapBtcCC/CurvePool'
 
 const ChainLinkAddress = '0xf4030086522a5beea4988f8ca5b36dbc97bee88c';
-// const sdFRAX3CRV_f_VaultAddress= '0xa2761B0539374EB7AF2155f76eb09864af075250';
+const VaultAddress = '0x24129b935aff071c4f0554882c0d9573f4975fed';
+const PoolAddress = '0x93054188d876f558f4a66b2ef1d97d16edf0895b';
 
 enum Options {
 	ethCC,
@@ -18,16 +21,19 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 	const oracle = Oracle.bind(Address.fromString(ChainLinkAddress));
 	const underlyingPrice = oracle.latestAnswer().times(BigInt.fromString('10').pow(10));
 
-	// const vault = sdFRAX3CRV_f_Vault.bind(Address.fromString(sdFRAX3CRV_f_VaultAddress));
+	const vault = Vault.bind(Address.fromString(VaultAddress));
+	const pool = CurvePool.bind(Address.fromString(PoolAddress));
 
 	let entity = MintEvent.load(call.transaction.hash.toHexString());
 
 	if(entity) {
+		const pps = vault.getPricePerFullShare();
+		const vp = pool.get_virtual_price();
+
 		entity.premiumUnderlyingToken = call.inputs._order.signer.amount;
 		entity.oTokenAmount = call.inputs._otokenAmount;
 		entity.collateralAmount = call.inputs._collateralAmount;
 		entity.underlyingAssetPrice = underlyingPrice;
-		// entity.sdTokenPricePerShare = vault.getPricePerFullShare();
 
 		entity.save();
 	}

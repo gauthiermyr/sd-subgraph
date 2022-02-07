@@ -21,8 +21,8 @@ dataSources:
           file: ./abis/AirSwap.json
         - name: ChainLink
           file: ./abis/ChainLink.json
-        - name: sdFRAX3CRV_f_Vault
-          file: ./abis/sdFRAX3CRV_f_Vault.json
+        - name: Vault
+          file: ./abis/Vault.json
       callHandlers: 
         - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
           handler: handleMintAndSellOTokenCall
@@ -46,8 +46,8 @@ dataSources:
       abis:
         - name: Payout
           file: ./abis/Payout.json
-        - name: sdFRAX3CRV_f_Vault
-          file: ./abis/sdFRAX3CRV_f_Vault.json
+        - name: Vault
+          file: ./abis/Vault.json
       eventHandlers:
         - event: VaultSettled(indexed address,indexed address,address,uint256,uint256,indexed uint256)
           handler: handleVaultSettled
@@ -71,6 +71,10 @@ dataSources:
           file: ./abis/AirSwap.json
         - name: ChainLink
           file: ./abis/ChainLink.json
+        - name: Vault
+          file: ./abis/Vault.json
+        - name: CurvePool
+          file: ./abis/Curve.json
       callHandlers: 
         - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
           handler: handleMintAndSellOTokenCall
@@ -117,6 +121,10 @@ dataSources:
           file: ./abis/AirSwap.json
         - name: ChainLink
           file: ./abis/ChainLink.json
+        - name: Vault
+          file: ./abis/Vault.json
+        - name: CurvePool
+          file: ./abis/Curve.json
       callHandlers: 
         - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
           handler: handleMintAndSellOTokenCall
