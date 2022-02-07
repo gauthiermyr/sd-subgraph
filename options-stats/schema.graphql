@@ -18,9 +18,9 @@ type CloseEvent @entity {
   # sdTokenPricePerShare: BigInt
 }
 
-# type HarvestEvent @entity {
-#   id: ID!
-#   option: Int!
-#   timestamp: BigInt!
-#   sdTokenPricePerShare: BigInt
-# }
+type HarvestEvent @entity {
+  id: ID!
+  option: Int!
+  timestamp: BigInt!
+  sdTokenPricePerShare: BigInt!
+}

@@ -5,6 +5,8 @@ import { Vault } from "../generated/AirSwapEthPut/Vault";
 import { MintEvent, CloseEvent } from "../generated/schema"
 import { Address, BigInt, ethereum, store } from '@graphprotocol/graph-ts'
 import { VaultSettled as VaultSettledEvent } from '../generated/Payout/Payout';
+import { HarvestEvent } from "../generated/schema";
+import { Harvested as Harvest} from "../generated/Harvest/Harvest"
 
 const ChainLinkAddress = '0x8fffffd4afb6115b954bd326cbe7b4ba576818f6';
 const sdFRAX3CRV_f_VaultAddress= '0x5af15da84a4a6edf2d9fa6720de921e1026e37b7';
@@ -28,7 +30,6 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 		entity.oTokenAmount = call.inputs._otokenAmount;
 		entity.collateralAmount = call.inputs._collateralAmount;
 		entity.underlyingAssetPrice = USDCPrice;
-		// entity.sdTokenPricePerShare = vault.getPricePerFullShare();
 
 		entity.save();
 	}
@@ -54,7 +55,16 @@ export function handleVaultSettled(event: VaultSettledEvent): void {
 	entity.timestamp = event.block.timestamp;
 	entity.option = Options.fraxRetail;
 	entity.sdTokenSentAmount = event.params.payout;
-	// entity.sdTokenPricePerShare = vault.getPricePerFullShare();
+
+	entity.save();
+}
+
+export function handleHarvest(event: Harvest): void {
+	const vault = Vault.bind(Address.fromString(sdFRAX3CRV_f_VaultAddress));
+	let entity = new HarvestEvent(event.transaction.hash.toHexString());
+	entity.timestamp = event.block.timestamp;
+	entity.option = Options.fraxRetail;
+	entity.sdTokenPricePerShare = vault.getPricePerFullShare();
 
 	entity.save();
 }
