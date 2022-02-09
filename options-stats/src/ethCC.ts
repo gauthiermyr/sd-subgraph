@@ -54,6 +54,7 @@ export function handleMintAndSellOTokenEvent(event: MintAndSellOTokenEvent): voi
 										.times(BigInt.fromString('10').pow(18))
 										.div(vp);;
 	entity.timestamp = event.block.timestamp;
+	entity.sdTokenPricePerShare = BigInt.fromI64(1);
 
 	entity.save();
 }
@@ -69,6 +70,7 @@ export function handleVaultSettled(event: VaultSettledEvent): void {
 	entity.option = Options.ethCC;
 	entity.sdTokenSentAmount = event.params.payout;
 	// entity.sdTokenPricePerShare = vault.getPricePerFullShare();
+	entity.sdTokenPricePerShare = BigInt.fromI64(1);
 
 	entity.save();
 }

@@ -34,6 +34,7 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 		entity.oTokenAmount = call.inputs._otokenAmount;
 		entity.collateralAmount = call.inputs._collateralAmount;
 		entity.underlyingAssetPrice = underlyingPrice;
+		entity.sdTokenPricePerShare = BigInt.fromI64(1);
 
 		entity.save();
 	}
@@ -60,6 +61,7 @@ export function handleVaultSettled(event: VaultSettledEvent): void {
 	entity.option = Options.btcCC;
 	entity.sdTokenSentAmount = event.params.payout;
 	// entity.sdTokenPricePerShare = vault.getPricePerFullShare();
+	entity.sdTokenPricePerShare = BigInt.fromI64(1);
 
 	entity.save();
 }
