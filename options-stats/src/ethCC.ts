@@ -15,9 +15,6 @@ enum Options {
 	ethCC,
 	btcCC,
 	fraxRetail,
-	aave,
-	uni,
-	link,
 }
 
 export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
