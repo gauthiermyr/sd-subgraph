@@ -52,28 +52,7 @@ dataSources:
         - event: VaultSettled(indexed address,indexed address,address,uint256,uint256,indexed uint256)
           handler: handleVaultSettled
       file: ./src/ethPut.ts
-  # - kind: ethereum
-  #   name: Harvest
-  #   network: mainnet
-  #   source:
-  #     address: "0x7D31cD07af9D02D27F3d4F6591126DCA079dB992"
-  #     abi: Harvest
-  #     startBlock: 13427889
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.5
-  #     language: wasm/assemblyscript
-  #     entities:
-  #       - CloseEvent
-  #     abis:
-  #       - name: Harvest
-  #         file: ./abis/Harvest.json
-  #       - name: Vault
-  #         file: ./abis/Vault.json
-  #     eventHandlers:
-  #       - event: Harvested(uint256,uint256)
-  #         handler: handleHarvest
-  #     file: ./src/ethPut.ts
+    
 ######################## ETH CC ##########################
   - kind: ethereum
     name: AirSwapEthCC
@@ -156,6 +135,53 @@ dataSources:
       file: ./src/btcCC.ts
   - kind: ethereum
     name: PayoutBtcCC
+    network: mainnet
+    source:
+      address: "0x4ccc2339f87f6c59c6893e1a678c2266ca58dc72"
+      abi: Payout
+      startBlock: 13244539	
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - CloseEvent
+      abis:
+        - name: Payout
+          file: ./abis/Payout.json
+      eventHandlers:
+        - event: VaultSettled(indexed address,indexed address,address,uint256,uint256,indexed uint256)
+          handler: handleVaultSettled
+      file: ./src/btcCC.ts
+
+######################## UNI CC ##########################
+  - kind: ethereum
+    name: AirSwapUniCC
+    network: mainnet
+    source:
+      address: "0xE2aA6276FABB74A70d6859117039C317eeaC85Fa"
+      abi: AirSwap
+      startBlock: 14082040		
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - MintEvent
+      abis:
+        - name: AirSwap
+          file: ./abis/AirSwap.json
+        - name: ChainLink
+          file: ./abis/ChainLink.json
+      callHandlers: 
+        - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
+          handler: handleMintAndSellOTokenCall
+      eventHandlers:
+        - event: MintAndSellOToken(uint256,uint256,uint256)
+          handler: handleMintAndSellOTokenEvent
+      file: ./src/uniCC.ts
+  - kind: ethereum
+    name: PayoutUniCC
     network: mainnet
     source:
       address: "0x4ccc2339f87f6c59c6893e1a678c2266ca58dc72"
