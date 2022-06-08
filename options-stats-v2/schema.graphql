@@ -3,8 +3,8 @@ type Option @entity {
   option: Int!
   contractAmount: BigInt!
   contractEquivalent: BigInt!
-  premium: BigInt!
-  premiumPercent: BigDecimal!
+  premiumAmount: BigInt!
+  premium: BigDecimal!
   expiry: BigInt!
   strike: BigInt!
   settlement: BigDecimal

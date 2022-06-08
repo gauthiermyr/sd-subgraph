@@ -29,8 +29,6 @@ dataSources:
           file: ./abis/oToken.json
         - name: MarginCalculator
           file: ./abis/MarginCalculator.json
-        # - name: Controller
-        #   file: ./abis/Controller.json
       callHandlers: 
         - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
           handler: handleMintAndSellOTokenCall

@@ -1,10 +1,9 @@
 import { MintAndSellOTokenCall, Action, ClosePositionCall } from "../generated/AirSwapbtc/Action"
 import { OToken } from "../generated/AirSwapbtc/OToken"
-import { Controller } from "../generated/AirSwapbtc/Controller"
 import { MarginCalculator } from "../generated/AirSwapbtc/MarginCalculator"
 import { ChainLink as Oracle } from "../generated/AirSwapbtc/ChainLink"
 import { Option } from "../generated/schema"
-import { Address, BigDecimal, BigInt, Entity, ethereum, store } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { Vault } from '../generated/AirSwapbtc/Vault'
 import { CurvePool } from '../generated/AirSwapbtc/CurvePool'
 
@@ -36,10 +35,10 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 	if(entity) {
 
 		entity.contractAmount = call.inputs._otokenAmount.plus(entity.contractAmount);
-		entity.premium = call.inputs._order.signer.amount.plus(entity.premium);
+		entity.premiumAmount = call.inputs._order.signer.amount.plus(entity.premiumAmount);
 		entity.contractEquivalent = entity.contractEquivalent.plus(call.inputs._otokenAmount.times(pps).times(vp).div(BigInt.fromI64(10).pow(36)));
 
-		entity.premiumPercent = entity.premium.toBigDecimal().div(entity.contractEquivalent.toBigDecimal());
+		entity.premium = entity.premiumAmount.toBigDecimal().div(entity.contractEquivalent.toBigDecimal());
 
 		entity.txs = `${entity.txs};${call.transaction.hash.toHexString()}`;
 		entity.save();
@@ -51,10 +50,10 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 		entity.strike = strike;
 		entity.option = 1;
 		entity.contractAmount = call.inputs._otokenAmount;
-		entity.premium = call.inputs._order.signer.amount;
+		entity.premiumAmount = call.inputs._order.signer.amount;
 		entity.contractEquivalent = call.inputs._otokenAmount.times(pps).times(vp).div(BigInt.fromI64(10).pow(36));
 		entity.txs = call.transaction.hash.toHexString();
-		entity.premiumPercent = entity.premium.toBigDecimal().div(entity.contractEquivalent.toBigDecimal());
+		entity.premium = entity.premiumAmount.toBigDecimal().div(entity.contractEquivalent.toBigDecimal());
 
 		entity.save();
 	}
@@ -64,9 +63,6 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 export function handleClosePositionCall(call: ClosePositionCall): void {
 	const action = Action.bind(Address.fromString(ActionAdress));
 	const oTokenAddress = action.otoken();
-	const oToken = OToken.bind(oTokenAddress);
-	// const controllerAddress = oToken.controller();
-	// const controller = Controller.bind(controllerAddress);
 	const calculator = MarginCalculator.bind(Address.fromString(CalculatorAddress));
 
 	let entity = Option.load(oTokenAddress.toHexString());
