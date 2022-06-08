@@ -1,0 +1,39 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+######################## BTC CC ##########################
+  - kind: ethereum
+    name: AirSwapbtc
+    network: mainnet
+    source:
+      address: "0x81e1c690b39053a96ee6f85f638ddf56effc2b62"
+      abi: Action
+      startBlock: 13336436		
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - MintEvent
+      abis:
+        - name: Action
+          file: ./abis/Action.json
+        - name: ChainLink
+          file: ./abis/ChainLink.json
+        - name: Vault
+          file: ./abis/Vault.json
+        - name: CurvePool
+          file: ./abis/Curve.json
+        - name: OToken
+          file: ./abis/oToken.json
+        - name: MarginCalculator
+          file: ./abis/MarginCalculator.json
+        # - name: Controller
+        #   file: ./abis/Controller.json
+      callHandlers: 
+        - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
+          handler: handleMintAndSellOTokenCall
+        - function: closePosition()
+          handler: handleClosePositionCall
+      file: ./src/btc.ts

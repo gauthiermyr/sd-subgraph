@@ -1,0 +1,14 @@
+type Option @entity {
+  id: ID!
+  option: Int!
+  contractAmount: BigInt!
+  contractEquivalent: BigInt!
+  premium: BigInt!
+  premiumPercent: BigDecimal!
+  expiry: BigInt!
+  strike: BigInt!
+  settlement: BigDecimal
+  isCurrent: Boolean!
+  txs: String! 
+  payout: BigInt!
+}
