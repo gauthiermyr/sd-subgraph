@@ -7,8 +7,19 @@ type Option @entity {
   premium: BigDecimal!
   expiry: BigInt!
   strike: BigInt!
-  settlement: BigDecimal
+  settlement: BigDecimal!
+  harvest: BigDecimal!
   isCurrent: Boolean!
   txs: String! 
   payout: BigInt!
+}
+
+type APY @entity {
+  id: ID!
+  perfAPY: BigDecimal!
+  harvestAPY: BigDecimal!
+  perfCumulative: BigDecimal!
+  harvestCumulative: BigDecimal!
+  startTimestamp: BigInt!
+  lastPricePerShare: BigDecimal!
 }

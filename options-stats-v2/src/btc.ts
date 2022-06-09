@@ -2,8 +2,8 @@ import { MintAndSellOTokenCall, Action, ClosePositionCall } from "../generated/A
 import { OToken } from "../generated/AirSwapbtc/OToken"
 import { MarginCalculator } from "../generated/AirSwapbtc/MarginCalculator"
 import { ChainLink as Oracle } from "../generated/AirSwapbtc/ChainLink"
-import { Option } from "../generated/schema"
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { APY, Option } from "../generated/schema"
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Vault } from '../generated/AirSwapbtc/Vault'
 import { CurvePool } from '../generated/AirSwapbtc/CurvePool'
 
@@ -54,8 +54,24 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 		entity.contractEquivalent = call.inputs._otokenAmount.times(pps).times(vp).div(BigInt.fromI64(10).pow(36));
 		entity.txs = call.transaction.hash.toHexString();
 		entity.premium = entity.premiumAmount.toBigDecimal().div(entity.contractEquivalent.toBigDecimal());
+		entity.harvest = BigDecimal.fromString("0");
+		entity.settlement = BigDecimal.fromString("0");
 
 		entity.save();
+	}
+
+	//create APY object at first mint
+	let apy = APY.load("1");
+	if(!apy) {
+		let apy = new APY("1");
+		apy.harvestAPY = BigDecimal.fromString('0');
+		apy.perfAPY = BigDecimal.fromString('0');
+		apy.perfCumulative = BigDecimal.fromString('0');
+		apy.harvestCumulative = BigDecimal.fromString('0');
+
+		apy.startTimestamp = call.block.timestamp;
+		apy.lastPricePerShare = pps.toBigDecimal().div(BigInt.fromString('10').pow(18).toBigDecimal());
+		apy.save();
 	}
 }
 
@@ -64,11 +80,37 @@ export function handleClosePositionCall(call: ClosePositionCall): void {
 	const action = Action.bind(Address.fromString(ActionAdress));
 	const oTokenAddress = action.otoken();
 	const calculator = MarginCalculator.bind(Address.fromString(CalculatorAddress));
+	const vault = Vault.bind(Address.fromString(VaultAddress));
+	const pps = vault.getPricePerFullShare();
 
 	let entity = Option.load(oTokenAddress.toHexString());
 	if(entity) {
 		entity.isCurrent = false;
 		entity.settlement = calculator.getExpiredPayoutRate(oTokenAddress).toBigDecimal().div(BigInt.fromString('10').pow(18).toBigDecimal());
+
+
+		let apy = APY.load("1");
+		if (apy) {
+			const newPricePerShare = pps.toBigDecimal().div(BigInt.fromString('10').pow(18).toBigDecimal());
+			entity.harvest = (newPricePerShare.minus(apy.lastPricePerShare)).div(apy.lastPricePerShare);
+
+			apy.perfCumulative = apy.perfCumulative.plus(entity.premium).minus(entity.settlement);
+			apy.harvestCumulative = apy.harvestCumulative.plus(entity.harvest);
+
+			const pastWeeks = Math.round(Math.abs(parseInt(call.block.timestamp.toString()) - parseInt(apy.startTimestamp.toString())) / (60 * 60 * 24 * 7))
+			
+			const perfCum = parseFloat(apy.perfCumulative.toString());
+			const perfAPY = (1 + perfCum / pastWeeks) ** 52 - 1;
+			apy.perfAPY = BigDecimal.fromString(perfAPY.toString());
+
+			const harvestCum = parseFloat(apy.harvestCumulative.toString());
+			const harvestAPY = (1 + harvestCum / pastWeeks) ** 52 - 1;
+			apy.harvestAPY = BigDecimal.fromString(harvestAPY.toString());
+
+			apy.lastPricePerShare = newPricePerShare;
+			apy.save();
+		}
+
 		entity.save();
 	}
 }
