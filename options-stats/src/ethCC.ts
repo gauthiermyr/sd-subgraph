@@ -21,8 +21,6 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 	const oracle = Oracle.bind(Address.fromString(ChainLinkAddress));
 	const underlyingPrice = oracle.latestAnswer().times(BigInt.fromString('10').pow(10));
 
-	
-
 	let entity = MintEvent.load(call.transaction.hash.toHexString());
 
 	if(entity) {
@@ -30,6 +28,25 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 		entity.premiumUnderlyingToken = call.inputs._order.signer.amount;
 										
 										
+		entity.oTokenAmount = call.inputs._otokenAmount;
+		entity.collateralAmount = call.inputs._collateralAmount;
+		entity.underlyingAssetPrice = underlyingPrice;
+		// entity.sdTokenPricePerShare = vault.getPricePerFullShare();
+
+		entity.save();
+	}
+}
+
+export function handleMintAndSellOTokenCallV2(call: MintAndSellOTokenCall): void {
+	const oracle = Oracle.bind(Address.fromString(ChainLinkAddress));
+	const underlyingPrice = oracle.latestAnswer().times(BigInt.fromString('10').pow(10));
+
+	let entity = MintEvent.load(call.transaction.hash.toHexString());
+
+	if(entity) {
+
+		entity.premiumUnderlyingToken = call.inputs._order.signer.amount;
+
 		entity.oTokenAmount = call.inputs._otokenAmount;
 		entity.collateralAmount = call.inputs._collateralAmount;
 		entity.underlyingAssetPrice = underlyingPrice;
@@ -59,8 +76,20 @@ export function handleMintAndSellOTokenEvent(event: MintAndSellOTokenEvent): voi
 	entity.save();
 }
 
+export function handleMintAndSellOTokenEventV2(event: MintAndSellOTokenEvent): void {
+	let entity = new MintEvent(event.transaction.hash.toHexString());
+	
+	entity.option = Options.ethCC;
+	entity.premiumSdToken = event.params.premium;
+	entity.timestamp = event.block.timestamp;
+	entity.sdTokenPricePerShare = BigInt.fromI64(1);
+
+	entity.save();
+}
+
 export function handleVaultSettled(event: VaultSettledEvent): void {
-	if(event.params.to.toHexString().toLowerCase() != '0xd41509B051200222DF4713DfeF3Cbe53d0105BC4'.toLowerCase()){
+	if(event.params.to.toHexString().toLowerCase() != '0xd41509B051200222DF4713DfeF3Cbe53d0105BC4'.toLowerCase()
+	&& event.params.to.toHexString().toLowerCase() != '0x7946b98660c04A19475148C25c6D3Bb3Bf7417E2'.toLowerCase()){
 		return;
 	}
 
