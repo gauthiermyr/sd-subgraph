@@ -2,14 +2,15 @@ specVersion: 0.0.2
 schema:
   file: ./schema.graphql
 dataSources:
-######################## BTC CC ##########################
+
+######################## ETH CALL ##########################
   - kind: ethereum
-    name: AirSwapbtc
+    name: AirSwapEthCall
     network: mainnet
     source:
-      address: "0x81e1c690b39053a96ee6f85f638ddf56effc2b62"
+      address: "0x7946b98660c04A19475148C25c6D3Bb3Bf7417E2"
       abi: Action
-      startBlock: 13336436		
+      startBlock: 15095334		
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -21,12 +22,10 @@ dataSources:
           file: ./abis/Action.json
         - name: ChainLink
           file: ./abis/ChainLink.json
-        - name: Vault
-          file: ./abis/Vault.json
-        - name: CurvePool
-          file: ./abis/Curve.json
         - name: OToken
           file: ./abis/oToken.json
+        - name: Controller
+          file: ./abis/Controller.json
         - name: MarginCalculator
           file: ./abis/MarginCalculator.json
       callHandlers: 
@@ -34,4 +33,38 @@ dataSources:
           handler: handleMintAndSellOTokenCall
         - function: closePosition()
           handler: handleClosePositionCall
-      file: ./src/btc.ts
+      file: ./src/ethv2.ts
+  - kind: ethereum
+    name: OpynPerpVaultEth
+    network: mainnet
+    source:
+      address: "0xc10b7ca0383f0357edeed233dc806b5229dcf4a5"
+      abi: OpynPerpVaultEth
+      startBlock: 15082363	
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Event
+        - Register
+      abis:
+        - name: OpynPerpVaultEth
+          file: ./abis/OpynPerpVaultEth.json
+      callHandlers:
+        - function: registerDepositETH(address)
+          handler: handleRegisterETH
+        - function: registerDeposit(uint256,address)
+          handler: handleRegister
+        - function: registerWithdraw(uint256)
+          handler: handleRegisterWithdraw
+        - function: claimShares(address,uint256)
+          handler: handleClaimShares
+        - function: withdrawFromQueue(uint256)
+          handler: handleWithdrawFromQueue
+      eventHandlers:
+        - event: Deposit(address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(address,uint256,uint256)
+          handler: handleWithdraw
+      file: ./src/ethv2.ts

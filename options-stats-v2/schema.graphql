@@ -1,25 +1,47 @@
 type Option @entity {
-  id: ID!
-  option: Int!
-  contractAmount: BigInt!
-  contractEquivalent: BigInt!
-  premiumAmount: BigInt!
-  premium: BigDecimal!
-  expiry: BigInt!
-  strike: BigInt!
-  settlement: BigDecimal!
-  harvest: BigDecimal!
-  isCurrent: Boolean!
-  txs: String! 
-  payout: BigInt!
+	id: ID!
+	option: Int!
+	contractAmount: BigInt!
+	contractEquivalent: BigInt!
+	premiumAmount: BigInt!
+	premium: BigDecimal!
+	expiry: BigInt!
+	strike: BigInt!
+	settlementAmount: BigInt!
+	settlement: BigDecimal!
+	harvest: BigDecimal!
+	isCurrent: Boolean!
+	txs: String! 
 }
 
 type APY @entity {
-  id: ID!
-  perfAPY: BigDecimal!
-  harvestAPY: BigDecimal!
-  perfCumulative: BigDecimal!
-  harvestCumulative: BigDecimal!
-  startTimestamp: BigInt!
-  lastPricePerShare: BigDecimal!
+	id: ID!
+	perfAPY: BigDecimal!
+	harvestAPY: BigDecimal!
+	perfCumulative: BigDecimal!
+	harvestCumulative: BigDecimal!
+	startTimestamp: BigInt!
+	lastPricePerShare: BigDecimal!
+}
+
+type Event @entity {
+	id: ID!
+	type: String!
+	account: Bytes!
+	amount: BigInt!
+	token: String!
+	timestamp: BigInt!
+	tx: Bytes!
+	option: Int!
+}
+
+type Register @entity {
+	id: ID!
+	type: String!
+	round: BigInt!
+	amount: BigInt!
+	account: Bytes!
+	claimed: Boolean!
+	option: Int!
+	timestamp: BigInt!
 }
