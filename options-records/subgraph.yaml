@@ -16,28 +16,18 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - MintEvent
+        - Event
       abis:
         - name: Action
           file: ./abis/Action.json
-        - name: ChainLink
-          file: ./abis/ChainLink.json
-        - name: OToken
-          file: ./abis/oToken.json
-        - name: Controller
-          file: ./abis/Controller.json
-        - name: MarginCalculator
-          file: ./abis/MarginCalculator.json
-        - name: Vault
-          file: ./abis/Vault.json
-        - name: CurvePool
-          file: ./abis/Curve.json
       callHandlers: 
         - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
           handler: handleMintAndSellOTokenCall
         - function: closePosition()
           handler: handleClosePositionCall
-      file: ./src/ethv2.ts
+        - function: commitOToken(address)
+          handler: handleCommit
+      file: ./src/main.ts
   - kind: ethereum
     name: AirSwapEthCall_Old
     network: mainnet
@@ -50,28 +40,18 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - MintEvent
+        - Event
       abis:
         - name: Action
           file: ./abis/Action.json
-        - name: ChainLink
-          file: ./abis/ChainLink.json
-        - name: OToken
-          file: ./abis/oToken.json
-        - name: Controller
-          file: ./abis/Controller.json
-        - name: MarginCalculator
-          file: ./abis/MarginCalculator.json
-        - name: Vault
-          file: ./abis/Vault.json
-        - name: CurvePool
-          file: ./abis/Curve.json
       callHandlers: 
         - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
           handler: handleMintAndSellOTokenCall
         - function: closePosition()
           handler: handleClosePositionCall
-      file: ./src/ethv2.ts
+        - function: commitOToken(address)
+          handler: handleCommit
+      file: ./src/main.ts
   - kind: ethereum
     name: OpynPerpVaultEth
     network: mainnet
@@ -85,28 +65,34 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Event
-        - Register
       abis:
         - name: OpynPerpVaultEth
           file: ./abis/OpynPerpVaultEth.json
       callHandlers:
-        - function: registerDepositETH(address)
-          handler: handleRegisterETH
-        - function: registerDeposit(uint256,address)
-          handler: handleRegister
-        - function: registerWithdraw(uint256)
-          handler: handleRegisterWithdraw
-        - function: claimShares(address,uint256)
-          handler: handleClaimShares
-        - function: withdrawFromQueue(uint256)
-          handler: handleWithdrawFromQueue
-      eventHandlers:
-        - event: Deposit(address,uint256,uint256)
-          handler: handleDeposit
-        - event: Withdraw(address,uint256,uint256)
-          handler: handleWithdraw
-      file: ./src/ethv2.ts
-######################## ETH PUT ##########################
+        - function: rollOver(uint256[])
+          handler: handleRollOver
+      file: ./src/main.ts
+  - kind: ethereum
+    name: OpynPerpVaultEthOld
+    network: mainnet
+    source:
+      address: "0x9b8f14554f40705de7908879e2228d2ac94fde1a"
+      abi: OpynPerpVaultEth
+      startBlock: 13056599	
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Event
+      abis:
+        - name: OpynPerpVaultEth
+          file: ./abis/OpynPerpVaultEth.json
+      callHandlers:
+        - function: rollOver(uint256[])
+          handler: handleRollOver
+      file: ./src/main.ts
+# ######################## ETH PUT ##########################
   - kind: ethereum
     name: AirSwapEthPut
     network: mainnet
@@ -119,29 +105,39 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - MintEvent
+        - Event
       abis:
         - name: Action
           file: ./abis/Action.json
-        - name: ChainLink
-          file: ./abis/ChainLink.json
-        - name: OToken
-          file: ./abis/oToken.json
-        - name: Controller
-          file: ./abis/Controller.json
-        - name: MarginCalculator
-          file: ./abis/MarginCalculator.json
-        - name: Vault
-          file: ./abis/Vault.json
-        - name: CurvePool
-          file: ./abis/Curve.json
       callHandlers: 
         - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
           handler: handleMintAndSellOTokenCall
         - function: closePosition()
           handler: handleClosePositionCall
-      file: ./src/eth_put.ts
-######################## BTC CALL ##########################
+        - function: commitOToken(address)
+          handler: handleCommit
+      file: ./src/main.ts
+  - kind: ethereum
+    name: OpynPerpVaultPut
+    network: mainnet
+    source:
+      address: "0x839a989be40f2d60f00beeb648903732c041cbd7"
+      abi: OpynPerpVaultEth
+      startBlock: 13424194	
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Event
+      abis:
+        - name: OpynPerpVaultEth
+          file: ./abis/OpynPerpVaultEth.json
+      callHandlers:
+        - function: rollOver(uint256[])
+          handler: handleRollOver
+      file: ./src/main.ts
+# ######################## BTC CALL ##########################
   - kind: ethereum
     name: AirSwapBtcCall
     network: mainnet
@@ -154,25 +150,57 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - MintEvent
+        - Event
       abis:
         - name: Action
           file: ./abis/Action.json
-        - name: ChainLink
-          file: ./abis/ChainLink.json
-        - name: OToken
-          file: ./abis/oToken.json
-        - name: Controller
-          file: ./abis/Controller.json
-        - name: MarginCalculator
-          file: ./abis/MarginCalculator.json
-        - name: Vault
-          file: ./abis/Vault.json
-        - name: CurvePool
-          file: ./abis/Curve.json
       callHandlers: 
         - function: mintAndSellOToken(uint256,uint256,(uint256,uint256,(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(bytes4,address,address,uint256,uint256),(address,address,bytes1,uint8,bytes32,bytes32)))
           handler: handleMintAndSellOTokenCall
         - function: closePosition()
           handler: handleClosePositionCall
-      file: ./src/btc.ts
+        - function: commitOToken(address)
+          handler: handleCommit
+      file: ./src/main.ts
+  - kind: ethereum
+    name: OpynPerpVaultBtc
+    network: mainnet
+    source:
+      address: "0x227e4635c5fe22d1e36dab1c921b62f8acc451b9"
+      abi: OpynPerpVaultEth
+      startBlock: 13244531	
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Event
+      abis:
+        - name: OpynPerpVaultEth
+          file: ./abis/OpynPerpVaultEth.json
+      callHandlers:
+        - function: rollOver(uint256[])
+          handler: handleRollOver
+      file: ./src/main.ts
+################# otokens 
+  - kind: ethereum
+    name: OpynOtokens
+    network: mainnet
+    source:
+      address: "0x7c06792af1632e77cb27a558dc0885338f4bdf8e"
+      abi: Factory
+      startBlock: 13000000	
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Event
+      abis:
+        - name: Factory
+          file: ./abis/Factory.json
+      callHandlers:
+        - function: createOtoken(address,address,address,uint256,uint256,bool)
+          handler: handleGenerateOtoken
+      file: ./src/main.ts
+

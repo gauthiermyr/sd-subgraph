@@ -50,7 +50,7 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 		entity.isCurrent = true;
 		entity.expiry = expiry;
 		entity.strike = strike;
-		entity.option = 1;
+		entity.option = "btcv2";
 		entity.contractAmount = call.inputs._otokenAmount;
 		entity.premiumAmount = call.inputs._order.signer.amount;
 		entity.contractEquivalent = call.inputs._otokenAmount.times(pps).times(vp).div(BigInt.fromI64(10).pow(36));
@@ -64,16 +64,17 @@ export function handleMintAndSellOTokenCall(call: MintAndSellOTokenCall): void {
 	}
 
 	//create APY object at first mint
-	let apy = APY.load("1");
+	let apy = APY.load("btcv2");
 	if(!apy) {
-		let apy = new APY("1");
+		let apy = new APY("btcv2");
 		apy.harvestAPY = BigDecimal.fromString('0');
 		apy.perfAPY = BigDecimal.fromString('0');
 		apy.perfCumulative = BigDecimal.fromString('0');
 		apy.harvestCumulative = BigDecimal.fromString('0');
 
 		apy.startTimestamp = call.block.timestamp;
-		apy.lastPricePerShare = pps.toBigDecimal().div(BigInt.fromString('10').pow(18).toBigDecimal());
+		apy.lastPricePerShare = pps.toBigDecimal().div(BigInt.fromString('10').pow(18).toBigDecimal())
+								.times(vp.toBigDecimal().div(BigInt.fromString('10').pow(18).toBigDecimal()));
 		apy.save();
 	}
 }
@@ -97,9 +98,10 @@ export function handleClosePositionCall(call: ClosePositionCall): void {
 		const payout = controller.getPayout(oTokenAddress, entity.contractAmount).times(pps).times(vp).div(BigInt.fromI64(10).pow(36));
 		entity.settlementAmount = payout;
 
-		let apy = APY.load("1");
+		let apy = APY.load("btcv2");
 		if (apy) {
-			const newPricePerShare = pps.toBigDecimal().div(BigInt.fromString('10').pow(18).toBigDecimal());
+			const newPricePerShare = pps.toBigDecimal().div(BigInt.fromString('10').pow(18).toBigDecimal())
+									.times(vp.toBigDecimal().div(BigInt.fromString('10').pow(18).toBigDecimal()));
 			entity.harvest = (newPricePerShare.minus(apy.lastPricePerShare)).div(apy.lastPricePerShare);
 
 			apy.perfCumulative = apy.perfCumulative.plus(entity.premium).minus(entity.settlement);

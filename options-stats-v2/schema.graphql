@@ -1,6 +1,6 @@
 type Option @entity {
 	id: ID!
-	option: Int!
+	option: String!
 	contractAmount: BigInt!
 	contractEquivalent: BigInt!
 	premiumAmount: BigInt!
@@ -32,7 +32,7 @@ type Event @entity {
 	token: String!
 	timestamp: BigInt!
 	tx: Bytes!
-	option: Int!
+	option: String!
 }
 
 type Register @entity {
@@ -42,6 +42,6 @@ type Register @entity {
 	amount: BigInt!
 	account: Bytes!
 	claimed: Boolean!
-	option: Int!
+	option: String!
 	timestamp: BigInt!
 }

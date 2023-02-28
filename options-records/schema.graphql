@@ -1,0 +1,8 @@
+type Event @entity {
+	id: ID! #tx hash
+	from: Bytes! #tx initiator
+	to: Bytes
+	type: String!
+	vault: String!
+	ts: BigInt!
+}
